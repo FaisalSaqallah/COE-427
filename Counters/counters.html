@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Counters</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    
+    <div class="main-container">
+        <!-- Riyad Bank Logo at the Top Center -->
+  
+
+        <!-- Authentication and Counter Section (Right Half) -->
+        <div class="auth-counter-container">
+            <img src="RIYAD-bank-logo.png" alt="Riyad Bank Logo" class="bank-logo">
+            <!-- <h1>Counters Authentication</h1> -->
+            <!-- Authentication Section -->
+            <div id="auth-section">
+                <h2>Enter Counter ID</h2>
+                <input type="text" id="auth-input" placeholder="Enter Counter ID (e.g., c1)">
+                <button id="auth-btn">Login</button>
+                <p id="auth-error" style="display: none;">Invalid ID. Please try again (e.g., c1 to c6).</p>
+            </div>
+
+            <!-- Counters Container (Initially Hidden) -->
+            <div class="counter" id="counter-1" style="display: none;">
+                <h2>Counter 1</h2>
+                <p id="ticket-1">No Ticket</p>
+                <button onclick="getNextTicket(1)">Next Ticket</button>
+                <button onclick="closeCounter(1)">Close</button>
+            </div>
+
+            <div class="counter" id="counter-2" style="display: none;">
+                <h2>Counter 2</h2>
+                <p id="ticket-2">No Ticket</p>
+                <button onclick="getNextTicket(2)">Next Ticket</button>
+                <button onclick="closeCounter(2)">Close</button>
+            </div>
+
+            <div class="counter" id="counter-3" style="display: none;">
+                <h2>Counter 3</h2>
+                <p id="ticket-3">No Ticket</p>
+                <button onclick="getNextTicket(3)">Next Ticket</button>
+                <button onclick="closeCounter(3)">Close</button>
+            </div>
+
+            <div class="counter" id="counter-4" style="display: none;">
+                <h2>Counter 4</h2>
+                <p id="ticket-4">No Ticket</p>
+                <button onclick="getNextTicket(4)">Next Ticket</button>
+                <button onclick="closeCounter(4)">Close</button>
+            </div>
+
+            <div class="counter" id="counter-5" style="display: none;">
+                <h2>Counter 5</h2>
+                <p id="ticket-5">No Ticket</p>
+                <button onclick="getNextTicket(5)">Next Ticket</button>
+                <button onclick="closeCounter(5)">Close</button>
+            </div>
+
+            <div class="counter" id="counter-6" style="display: none;">
+                <h2>Counter 6</h2>
+                <p id="ticket-6">No Ticket</p>
+                <button onclick="getNextTicket(6)">Next Ticket</button>
+                <button onclick="closeCounter(6)">Close</button>
+            </div>   
+        </div>
+
+        <!-- Waiting Section (Left Half) -->
+       <div class="waiting-section">
+            <h2>Waiting to Be Called</h2>
+            <ul id="waiting-list"></ul>
+        </div>
+
+    </div>
+    <script>
+        let counterId = null;
+        const peers = ['ws://192.168.8.141:3001', 'ws://192.168.8.178:3006', "ws://192.168.8.157:3004"]; // Peer WebSocket addresses
+        const clients = [];
+
+        // Initialize WebSocket server for this counter
+        const server = new WebSocket('ws://192.168.8.177:3003'); // Replace with the current device's address
+        server.onopen = () => console.log('Counter WebSocket server running');
+        server.onmessage = (event) => {
+            console.log('Message received on Counter server:', event.data);
+            handleIncomingMessage(JSON.parse(event.data));
+        };
+
+        // Connect to peer WebSocket servers
+        peers.forEach((peer) => {
+            const ws = new WebSocket(peer);
+            ws.onopen = () => {
+                console.log(`Connected to peer: ${peer}`);
+                clients.push(ws);
+            };
+            ws.onmessage = (event) => handleIncomingMessage(JSON.parse(event.data));
+        });
+
+        // Authenticate Counter User
+        function authenticateUser() {
+            const authInput = document.getElementById('auth-input').value.trim().toLowerCase();
+            const counterIdMap = { c1: 'counter-1', c2: 'counter-2', c3: 'counter-3', c4: 'counter-4', c5: 'counter-5', c6: 'counter-6' };
+
+            if (counterIdMap[authInput]) {
+                counterId = authInput;
+                console.log(`Counter authenticated: ${counterId}`);
+                document.getElementById('auth-section').style.display = 'none';
+                document.getElementById(counterIdMap[authInput]).style.display = 'block';
+            } else {
+                document.getElementById('auth-error').style.display = 'block';
+                console.warn('Invalid Counter ID');
+            }
+        }
+
+        // Get Next Ticket
+      function getNextTicket() {
+    if (!counterId) return;
+
+    // Fetch the waiting list from sessionStorage
+    let waitingList = JSON.parse(sessionStorage.getItem('waitingList') || '[]');
+    if (waitingList.length === 0) {
+        alert('No more tickets in the waiting list!');
+        console.warn('Waiting list is empty');
+        return;
+    }
+
+    // Retrieve and remove the first ticket
+    const nextTicket = waitingList.shift();
+    sessionStorage.setItem('waitingList', JSON.stringify(waitingList));
+
+    // Broadcast the updated waiting list to peers
+    broadcast({ type: 'UPDATE_WAITING_LIST', waitingList });
+
+    // Broadcast the served ticket (only once) with a status of "servicing"
+    const servedTicket = { ...nextTicket, counter: counterId, status: 'servicing' };
+    broadcast({ type: 'TICKET_SERVED', ticket: servedTicket });
+
+    // Update the Counter Display
+    const ticketElem = document.getElementById(`ticket-${counterId.split('c')[1]}`);
+    if (ticketElem) {
+        ticketElem.textContent = `${servedTicket.service}: Ticket Number ${servedTicket.number}`;
+        console.log(`Serving Ticket: ${servedTicket.service} - ${servedTicket.number}`);
+    }
+}
+
+
+    function broadcast(data) {
+        clients.forEach(client => {
+            if (client.readyState === WebSocket.OPEN) {
+                client.send(JSON.stringify(data));
+            }
+        });
+    }
+
+        // Close Counter
+        function closeCounter() {
+    if (!counterId) return;
+
+    // Hide the current counter section
+    const counterElem = document.getElementById(`counter-${counterId.split('c')[1]}`);
+    if (counterElem) counterElem.style.display = 'none';
+
+    // Reset ticket display
+    const ticketElem = document.getElementById(`ticket-${counterId.split('c')[1]}`);
+    const lastServedTicket = ticketElem ? ticketElem.textContent : null; // Get the last served ticket text
+    if (ticketElem) ticketElem.textContent = 'No Ticket';
+
+    // Reset the authentication input and hide error messages
+    const authInput = document.getElementById('auth-input');
+    const authError = document.getElementById('auth-error');
+    if (authInput) {
+        authInput.value = ''; // Clear the input field
+        authInput.style.border = ''; // Reset border styling if any validation changed it
+    }
+    if (authError) {
+        authError.style.display = 'none'; // Hide the error message
+    }
+
+    // Ensure the auth-section is displayed correctly
+    const authSection = document.getElementById('auth-section');
+    if (authSection) {
+        authSection.style.display = 'flex'; // Make sure it's visible
+        authSection.style.flexDirection = 'column'; // Ensure the correct layout
+        authSection.style.alignItems = 'center'; // Center content
+    }
+
+    // Broadcast CLOSE_COUNTER message to remove the ticket from "Being Serviced" in Display
+    if (lastServedTicket && lastServedTicket !== 'No Ticket') {
+        broadcast({
+            type: 'CLOSE_COUNTER',
+            counter: counterId,
+            ticketText: lastServedTicket,
+        });
+    }
+
+    // Reset the counter ID
+    counterId = null;
+
+    console.log('Counter closed, returning to authentication with reset input.');
+}
+
+
+
+        
+
+
+        function handleIncomingMessage(data) {
+    if (data.type === 'NEW_TICKET') {
+        console.log('New Ticket received:', data.ticket);
+
+        // Add the new ticket to the local waiting list (if not already there)
+        let waitingList = JSON.parse(sessionStorage.getItem('waitingList') || '[]');
+        if (!waitingList.some(ticket => ticket.number === data.ticket.number)) {
+            waitingList.push(data.ticket);
+            sessionStorage.setItem('waitingList', JSON.stringify(waitingList));
+            console.log('Updated waiting list:', waitingList);
+
+            // Update the waiting list display
+            updateWaitingListDisplay(waitingList);
+        }
+    } else if (data.type === 'UPDATE_WAITING_LIST') {
+        console.log('Waiting List Updated:', data.waitingList);
+        sessionStorage.setItem('waitingList', JSON.stringify(data.waitingList));
+
+        // Update the waiting list display
+        updateWaitingListDisplay(data.waitingList);
+    } else if (data.type === 'TICKET_SERVED') {
+        console.log('Ticket Served:', data.ticket);
+
+        // Move the ticket from waiting list to being serviced
+        moveTicketToServicedList(data.ticket);
+    }
+}
+function moveTicketToServicedList(ticket) {
+    const waitingListElem = document.getElementById('waiting-list');
+    const servicedListElem = document.getElementById('serviced-list');
+
+    // Remove the ticket from the waiting list
+    const waitingItems = waitingListElem.querySelectorAll('li');
+    waitingItems.forEach((item) => {
+        if (item.textContent === `${ticket.service}: Ticket Number ${ticket.number}`) {
+            item.remove();
+        }
+    });
+
+    // Add the ticket to the serviced list
+    const li = document.createElement('li');
+    li.textContent = `${ticket.service}: Ticket Number ${ticket.number}`;
+    servicedListElem.appendChild(li);
+}
+
+
+function updateWaitingListDisplay(waitingList) {
+    const waitingListElem = document.getElementById('waiting-list');
+    if (waitingListElem) {
+        // Clear the current waiting list
+        waitingListElem.innerHTML = '';
+
+        // Populate the waiting list with updated data
+        waitingList.forEach(ticket => {
+            const li = document.createElement('li');
+            li.textContent = `${ticket.service}: Ticket Number ${ticket.number}`;
+            waitingListElem.appendChild(li);
+        });
+    }
+}
+
+    function updateWaitingList(newList) {
+        let waitingList = JSON.parse(sessionStorage.getItem('waitingList') || '[]');
+        waitingList = newList;
+        sessionStorage.setItem('waitingList', JSON.stringify(waitingList));
+    }
+
+
+        // Initialize Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('auth-btn').addEventListener('click', authenticateUser);
+
+            const nextTicketBtn = document.getElementById('next-ticket-btn-1');
+            const closeCounterBtn = document.getElementById('close-counter-btn-1');
+
+            if (nextTicketBtn) nextTicketBtn.addEventListener('click', getNextTicket);
+            if (closeCounterBtn) closeCounterBtn.addEventListener('click', closeCounter);
+        });
+    </script>
+</body>
+</html>
