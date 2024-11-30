@@ -1,0 +1,679 @@
+/* Reset CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Body Styling */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #e0f7fa;
+}
+
+/* Body Styling for index.html */
+body.index-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    background: linear-gradient(to bottom right, #e0f7fa, #b2ebf2);
+    padding-top: 40px;
+}
+
+/* Kiosk Container Styling */
+.kiosk-container {
+    background-color: #ffffff;
+    border: 2px solid #00796b;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    text-align: center;
+}
+
+/* Header Styling */
+h1 {
+    color: #00796b;
+    margin-bottom: 20px;
+}
+
+/* Display Styling */
+.display {
+    background-color: #00796b;
+    color: #ffffff;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+/* Turn Number Styling */
+#turn-number {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #ffeb3b;
+}
+
+/* Button Styling (Index Page) */
+button {
+    background-color: #4caf50;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 1.2em;
+    cursor: pointer;
+    margin: 10px 0;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #388e3c;
+}
+
+button:active {
+    background-color: #2e7d32;
+}
+/* Moving Text */
+
+.moving-text {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #790000;
+    color: #ffffff;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 1.2em;
+    padding: 10px 0;
+}
+
+.moving-text div {
+    display: inline-block;
+    animation: scroll-text 60s linear infinite;
+    white-space: nowrap;
+}
+
+@keyframes scroll-text {
+    from {
+        transform: translateX(35%);
+    }
+    to {
+        transform: translateX(-100%);
+    }
+}
+/* Video Container */
+.video-container {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 50%; /* Video occupies the bottom half of the screen */
+    overflow: hidden;
+    z-index: 1;
+}
+
+.video-container video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Ensures the video fills the container */
+    position: absolute;
+}
+
+/* Moving Text */
+.moving-text {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #790000;
+    color: #ffffff;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 1.2em;
+    padding: 10px 0;
+    z-index: 2;
+}
+
+.moving-text div {
+    display: inline-block;
+    animation: scroll-text 60s linear infinite;
+    white-space: nowrap;
+}
+
+/* Fullscreen Styling */
+:fullscreen .video-container, 
+:-webkit-full-screen .video-container {
+    bottom: 0;
+    width: 100%;
+    height: 50%; /* Video still occupies only the bottom half */
+}
+
+
+
+
+/* Full-Screen Sections (Display and Counters Pages) */
+.serviced-section,
+.waiting-section {
+    width: 50%;
+    height: 100%;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Serviced Section Styling */
+.serviced-section {
+    background-color: #00796b;
+    color: #ffffff;
+}
+
+/* Waiting Section Styling */
+.waiting-section {
+    background-color: #4caf50;
+    color: #ffffff;
+}
+
+/* Counter Header Styling */
+.counter h2 {
+    text-align: center;
+    font-size: 1.8em;
+    color: #00796b;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60px;
+}
+
+
+/* List Styling */
+ul {
+    list-style: none;
+    width: 100%;
+    padding: 0;
+}
+
+li {
+    padding: 15px;
+    margin: 10px 0;
+    background-color: #ffffff;
+    color: #00796b;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 1.2em;
+}
+
+/* Button Styling (Display and Counters Pages) */
+button {
+    margin-top: auto;
+    background-color: #ffeb3b;
+    color: #00796b;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #fbc02d;
+}
+
+button:active {
+    background-color: #f57f17;
+}
+#ticket-1 {
+    text-align: center;
+    font-size: 1.2em;
+    color: #0011ff;
+    margin: 10px 0;
+}
+
+#ticket-2 {
+    text-align: center;
+    font-size: 1.2em;
+    color: #0011ff;
+    margin: 10px 0;
+}
+
+#ticket-3 {
+    text-align: center;
+    font-size: 1.2em;
+    color: #0011ff;
+    margin: 10px 0;
+}
+
+#ticket-4 {
+    text-align: center;
+    font-size: 1.2em;
+    color: #0011ff;
+    margin: 10px 0;
+}
+
+#ticket-5 {
+    text-align: center;
+    font-size: 1.2em;
+    color: #0011ff;
+    margin: 10px 0;
+}
+
+#ticket-6 {
+    text-align: center;
+    font-size: 1.2em;
+    color: #0011ff;
+    margin: 10px 0;
+}
+
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Body Styling */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #e0f7fa;
+}
+
+/* Main Container */
+.main-container {
+    display: flex;
+    width: 90%;
+    max-width: 1200px;
+    height: 90vh;
+}
+
+/* Waiting Section (Left Half) */
+.waiting-section {
+    flex: 1;
+    padding: 20px;
+    background-color: #4caf50;
+    color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+}
+
+/* Authentication and Counter Section (Right Half) */
+.auth-counter-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* Authentication Section */
+#auth-section {
+    width: 300px;
+    padding: 20px;
+    background-color: #ffffff;
+    border: 2px solid #00796b;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Error Message Styling */
+#auth-error {
+    color: red;
+    margin-top: 10px;
+    font-size: 0.9em;
+}
+
+/* Counter Styling */
+.counter {
+    width: 300px;
+    background-color: #ffffff;
+    border: 2px solid #00796b;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Counter Header */
+.counter h2 {
+    font-size: 1.5em;
+    color: #00796b;
+    margin-bottom: 10px;
+}
+
+/* Ticket Text Styling */
+p[id^="ticket-"] {
+    font-size: 1.2em;
+    color: #0011ff;
+    margin: 10px 0;
+}
+
+/* Button Styling */
+button {
+    margin-top: 10px;
+    background-color: #ffeb3b;
+    color: #00796b;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #fbc02d;
+}
+
+button:active {
+    background-color: #f57f17;
+}
+
+/* List Styling */
+ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+}
+
+li {
+    padding: 10px;
+    margin: 5px 0;
+    background-color: #ffffff;
+    color: #00796b;
+    border-radius: 5px;
+    text-align: center;
+}
+
+/* Service Button Styling */
+.service-btn {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 15px;
+    padding: 15px 20px;
+    background-color: #4caf50;
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.service-btn:hover {
+    background-color: #388e3c;
+    transform: scale(1.05);
+}
+
+.service-btn img.service-icon {
+    width: 40px; /* Adjust icon size */
+    height: 40px;
+}
+
+/* Center Kiosk Container */
+.kiosk-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px; /* Space between buttons and heading */
+    background-color: #ffffff;
+    border: 2px solid #00796b;
+    border-radius: 20px;
+    padding: 30px; /* Increase padding for better spacing */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 350px; /* Wider container for better button fit */
+    max-width: 90%; /* Ensure responsiveness */
+    text-align: center;
+}
+
+/* Service Button Styling */
+.service-btn {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 15px;
+    padding: 15px 20px;
+    background-color: #00843d; /* Riyad Bank green */
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+    width: 100%; /* Button fits container width */
+    max-width: 300px; /* Prevent too wide buttons */
+}
+
+.service-btn:hover {
+    background-color: #ad1a00; /* Change to dark blue on hover */
+    transform: scale(1.05);
+}
+
+.service-btn img.service-icon {
+    width: 40px;
+    height: 40px;
+}
+
+/* Responsive Design for Smaller Screens */
+@media (max-width: 600px) {
+    .kiosk-container {
+        width: 90%; /* Adjust container width */
+    }
+
+    .service-btn {
+        max-width: 90%; /* Ensure buttons don’t overflow */
+    }
+}
+
+/* Language Switch Styling */
+#language-switch {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* Space between buttons */
+    margin-bottom: 20px; /* Space below language switch */
+}
+
+.language-btn {
+    background-color: #004aad; /* Riyad Bank's blue */
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.language-btn:hover {
+    background-color: #00843d; /* Switch to green on hover */
+}
+
+/* Help Button Styling */
+.help-btn {
+    background-color: #004aad;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 1em;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.help-btn:hover {
+    background-color: #00843d;
+}
+
+/* Modal Styling */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 80%;
+    max-width: 500px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Modal Close Button */
+.close-btn {
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    color: #ffffff; /* White close button */
+    background-color: #ff0000; /* Red background for better visibility */
+    border: none;
+    border-radius: 50%; /* Make it circular */
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto; /* Push to the far right */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth hover effect */
+}
+
+.close-btn:hover {
+    background-color: #cc0000; /* Darker red on hover */
+    transform: scale(1.1); /* Slight zoom on hover */
+}
+
+.modal-content h2 {
+    display: flex;
+    align-items: center; /* Align the text and close button */
+    justify-content: space-between;
+    margin: 0;
+    font-size: 1.5em;
+    color: #004aad; /* Riyad Bank blue */
+    border-bottom: 2px solid #e0e0e0; /* Subtle separator for better structure */
+    padding-bottom: 10px; /* Add spacing below the heading */
+}
+
+.close-btn {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Add shadow for depth */
+}
+
+
+/* Ticket Display Styling */
+#turn-number {
+    font-size: 2em;
+    font-weight: bold;
+    color: #ffffff; /* Riyad Bank's blue */
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.display {
+    background-color: #00843d; /* Riyad Bank's green */
+    color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    margin-top: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+#turn-number-section p {
+    font-size: 1.2em;
+    color: #ffffff; /* White text for better contrast */
+    margin-top: 10px;
+}
+
+/* Right-to-left alignment for Arabic buttons */
+.rtl .service-btn {
+    flex-direction: row-reverse;
+    text-align: right;
+}
+
+
+/* Arabic-specific Help Modal alignment */
+.rtl #help-modal h2 {
+    text-align: right;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.rtl #help-modal h2 .close-btn {
+    position: absolute;
+    top: 10px; /* Adjust as necessary */
+    left: 10px; /* Move to the left corner */
+    font-size: 24px;
+    cursor: pointer;
+}
+
+/* Arabic-specific Ticket alignment */
+.rtl #turn-number {
+    text-align: right;
+    direction: rtl; /* Ensure proper RTL behavior */
+}
+
+/* Arabic-specific Help Modal alignment */
+.rtl #help-modal h2 {
+    text-align: right;
+    direction: rtl;
+    display: flex;
+    justify-content: flex-start; /* Align text to the right */
+    align-items: center;
+    padding-right: 20px; /* Add padding for better spacing */
+    position: relative;
+}
+
+.rtl #help-modal h2 .close-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px; /* Close button moves to the left for Arabic */
+    font-size: 24px;
+    cursor: pointer;
+}
+
+/* Arabic-specific Ticket alignment */
+.rtl #turn-number {
+    text-align: right;
+    direction: rtl; /* Maintain RTL text flow */
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    height: 100%; /* Ensure it spans the height */
+}
+
+
+
+.bank-logo {
+    display: block;
+    margin: 0 auto; /* Center the logo horizontally */
+    max-width: 300px; /* Adjust size as needed */
+    height: auto;
+    margin-bottom: 10px; /* Add space below the logo */
+}

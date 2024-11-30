@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Kiosk</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <body class="index-page">
+        <!-- Riyad Bank Logo at the Top Center -->
+    <div class="top-logo-container">
+        <img src="RIYAD-bank-logo.png" alt="Riyad Bank Logo" class="bank-logo">
+    </div>
+    
+    <!-- Welcome Section -->
+    <div id="welcome-section">
+        <h1>Welcome to Riyad Bank</h1>
+    </div>
+    
+    <div id="language-switch">
+        <button onclick="switchLanguage('en')" class="language-btn">English</button>
+        <button onclick="switchLanguage('ar')" class="language-btn">عربي</button>
+    </div>
+    
+    
+       
+        <!-- Choose Service Section -->
+        <div id="choose-service-section" class="kiosk-container">
+            <h1 id="choose-service-header">Choose Your Service</h1>
+            <button id="customer-service-btn" class="service-btn">
+                <img src="customer-service-icon.png" alt="Customer Service Icon" class="service-icon"> Customer Service
+            </button>
+            <button id="tellers-btn" class="service-btn">
+                <img src="teller-service-icon.png" alt="Teller Service Icon" class="service-icon"> Tellers
+            </button>
+            <button id="relationship-officer-btn" class="service-btn">
+                <img src="relationship.png" alt="Relationship Officer Icon" class="service-icon"> Relationship Officer
+            </button>
+        </div>
+        
+        
+        <!-- Turn Number Display Section (Initially Hidden) -->
+        <div id="turn-number-section" class="kiosk-container" style="display: none;">
+            <h1>Bank Kiosk System</h1>
+            <div class="display">
+                <p>Your Turn Number:</p>
+                <h2 id="turn-number">--</h2>
+            </div>
+        </div>
+
+        <!-- Help Modal -->
+        <button id="help-btn" class="help-btn">Help</button>
+        <div id="help-modal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <h2>
+                    How to Use the Kiosk
+                    <span class="close-btn" onclick="closeHelpModal()">&times;</span>
+                </h2>
+                <p>1. Select your desired service from the options above.</p>
+                <p>2. Wait for your turn number to be displayed.</p>
+                <p>3. Proceed to the counter when your number is called.</p>
+            </div>
+        </div>
+    
+    
+    
+    
+
+    <script>
+        let turnNumber = 0;
+        const peers = ['ws://192.168.8.141:3001', 'ws://192.168.8.177:3003', 'ws://192.168.8.178:3006']; // Peer WebSocket addresses (exclude self)
+        const clients = [];
+        const server = new WebSocket('ws://192.168.8.157:3001');
+        server.onopen = () => console.log('KIOSK WebSocket server running');
+        server.onmessage = (event) => handleIncomingMessage(JSON.parse(event.data));
+// Function to show the turn number and update the waiting list
+
+
+// Event listeners for service buttons
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('customer-service-btn').addEventListener('click', () => {
+        showTurnNumber('Customer Service');
+    });
+
+    document.getElementById('tellers-btn').addEventListener('click', () => {
+        showTurnNumber('Tellers');
+    });
+    document.getElementById('relationship-officer-btn').addEventListener('click', () => {
+        showTurnNumber('Relationship Officer');
+       
+    });
+
+    // Update the waiting list when the page loads
+    updateWaitingList();
+});
+
+
+// Function to show the turn number and update the waiting list
+// Object to track ticket numbers for each service
+const ticketCounters = {
+    "Customer Service": 0,
+    "Tellers": 0,
+    "Relationship Officer": 0,
+};
+
+// Function to show the turn number and update the waiting list
+function showTurnNumber(service) {
+    const servicePrefixes = {
+        "Customer Service": "CS-",
+        "Tellers": "T-",
+        "Relationship Officer": "RO-",
+    };
+
+    // Increment the ticket number for the specific service
+    ticketCounters[service]++;
+    const ticketNumber = `${servicePrefixes[service]}${ticketCounters[service]}`;
+
+    // Broadcast the new ticket
+    const ticket = { number: ticketNumber, service };
+    broadcast({ type: 'NEW_TICKET', ticket });
+
+    // Get current language
+    const lang = document.querySelector("html").getAttribute("lang");
+
+    // Language-specific ticket screen content
+    const ticketScreenContent = {
+        en: {
+            title: "Bank Kiosk System",
+            ticketLabel: "Your Ticket:",
+        },
+        ar: {
+            title: "نظام الكشك المصرفي",
+            ticketLabel: "تذكرتك:",
+        },
+    };
+
+    // Update the ticket display
+    document.getElementById("turn-number-section").style.display = "block";
+    document.getElementById("turn-number-section").innerHTML = `
+        <h1>${ticketScreenContent[lang].title}</h1>
+        <div class="display">
+            <p>${ticketScreenContent[lang].ticketLabel}</p>
+            <h2 id="turn-number">${ticketNumber}</h2>
+        </div>
+    `;
+
+    // Hide the "Choose Your Service" section
+    document.getElementById("choose-service-section").style.display = "none";
+
+    // Automatically switch back to the "Choose Your Service" section after 5 seconds
+    setTimeout(() => {
+        document.getElementById("turn-number-section").style.display = "none";
+        document.getElementById("choose-service-section").style.display = "block";
+    }, 5000);
+}
+
+
+
+
+
+// Function to update the Waiting List UI
+function updateWaitingList() {
+    const waitingListElem = document.getElementById('waiting-list');
+    if (!waitingListElem) return;
+    waitingListElem.innerHTML = '';
+
+    // Display each ticket in the waiting list with service type
+    waitingList.forEach(({ number, service }) => {
+        const li = document.createElement('li');
+        li.textContent = `${service}: Ticket Number ${number}`;
+        waitingListElem.appendChild(li);
+    });
+}
+
+
+// Language content mapping
+const languageContent = {
+    en: {
+        welcome: "Welcome to Riyad Bank Kiosk",
+        chooseService: "Choose Your Service",
+        customerService: "Customer Service",
+        tellers: "Tellers",
+        relationshipOfficer: "Relationship Officer", // Added
+        help: "Help",
+        helpModalTitle: "How to Use the Kiosk",
+        helpModalSteps: [
+            "Select your desired service from the options above.",
+            "Wait for your turn number to be displayed.",
+            "Proceed to the counter when your number is called.",
+        ],
+    },
+    ar: {
+        welcome: "مرحبًا بكم في كشك بنك الرياض",
+        chooseService: "اختر خدمتك",
+        customerService: "خدمة العملاء",
+        tellers: "الصرافين",
+        relationshipOfficer: "مسؤول العلاقات", // Added
+
+        help: "مساعدة",
+        helpModalTitle: "كيفية استخدام الكشك",
+        helpModalSteps: [
+            ".اختر الخدمة المطلوبة من الخيارات أعلاه",
+            ".انتظر حتى يتم عرض رقم دورك",
+            ".توجه إلى الكاونتر عند استدعاء رقمك",
+        ],
+    },
+};
+
+
+
+// Function to switch language
+function switchLanguage(lang) {
+    // Update the <html> tag's lang attribute for consistency
+    document.querySelector("html").setAttribute("lang", lang);
+
+    // Add or remove the "rtl" class for Arabic
+    if (lang === "ar") {
+        document.body.classList.add("rtl");
+    } else {
+        document.body.classList.remove("rtl");
+    }
+
+    // Update welcome message
+    document.querySelector("#welcome-section h1").innerText =
+        languageContent[lang].welcome;
+
+    // Update button text for services
+    document.querySelector("#customer-service-btn").innerHTML = `
+        <img src="customer-service-icon.png" alt="${languageContent[lang].customerService} Icon" class="service-icon">
+        ${languageContent[lang].customerService}
+    `;
+    document.querySelector("#tellers-btn").innerHTML = `
+        <img src="teller-service-icon.png" alt="${languageContent[lang].tellers} Icon" class="service-icon">
+        ${languageContent[lang].tellers}
+    `;
+     document.querySelector("#relationship-officer-btn").innerHTML = `
+        <img src="relationship.png" alt="${languageContent[lang].relationshipOfficer} Icon" class="service-icon">
+        ${languageContent[lang].relationshipOfficer}
+    `;
+    // Update "Choose Your Service" header dynamically
+    document.querySelector("#choose-service-header").innerText =
+        languageContent[lang].chooseService;
+
+    // Update Help Button
+    document.getElementById("help-btn").innerText = languageContent[lang].help;
+
+    // Update Help Modal Title and Steps
+    const helpModal = document.querySelector("#help-modal");
+    helpModal.querySelector("h2").innerHTML = `
+        ${languageContent[lang].helpModalTitle}
+        <span class="close-btn" onclick="closeHelpModal()">&times;</span>
+    `;
+
+    const modalSteps = helpModal.querySelectorAll("p");
+    modalSteps.forEach((p, index) => {
+        p.innerText = languageContent[lang].helpModalSteps[index];
+    });
+
+    // Update ticket screen content if visible
+    const ticketSection = document.getElementById("turn-number-section");
+    if (ticketSection.style.display === "block") {
+        const ticketScreenContent = {
+            en: {
+                title: "Bank Kiosk System",
+                ticketLabel: "Your Ticket:",
+                
+            },
+            ar: {
+                title: "نظام الكشك المصرفي",
+                ticketLabel: "تذكرتك:",
+                
+            },
+        };
+
+        ticketSection.querySelector("h1").innerText = ticketScreenContent[lang].title;
+
+        const ticketLabel = ticketSection.querySelector("#turn-number");
+        const ticketNumber = ticketLabel.innerText.split(":")[1].trim(); // Keep ticket number
+        ticketLabel.innerText = `${ticketScreenContent[lang].ticketLabel} ${ticketNumber}`;
+
+       
+    }
+}
+
+
+
+// Open Help Modal
+function openHelpModal() {
+    document.getElementById("help-modal").style.display = "flex";
+}
+
+// Close Help Modal
+function closeHelpModal() {
+    document.getElementById("help-modal").style.display = "none";
+}
+
+// Event Listener for Help Button
+document.getElementById("help-btn").addEventListener("click", openHelpModal);
+
+
+        // Connect to peer WebSocket servers
+        peers.forEach((peer) => {
+            const ws = new WebSocket(peer);
+            ws.onopen = () => {
+                console.log(`Connected to peer: ${peer}`);
+                clients.push(ws);
+            };
+            ws.onmessage = (event) => handleIncomingMessage(JSON.parse(event.data));
+        });
+
+        // Broadcast message to peers
+        function broadcast(message) {
+            clients.forEach((client) => {
+                if (client.readyState === WebSocket.OPEN) {
+                    client.send(JSON.stringify(message));
+                }
+            });
+        }
+
+        // Handle incoming messages
+        function handleIncomingMessage(data) {
+            if (data.type === 'TICKET_SERVED') {
+                console.log('Ticket served:', data.ticket);
+            }
+        }
+
+   
+    </script>
+</body>
+</html>
