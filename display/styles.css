@@ -1,0 +1,397 @@
+/* Reset CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Body Styling */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #e0f7fa;
+}
+
+/* Body Styling for index.html */
+body.index-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    background: linear-gradient(to bottom right, #e0f7fa, #b2ebf2);
+    padding-top: 40px;
+}
+
+/* Kiosk Container Styling */
+.kiosk-container {
+    background-color: #ffffff;
+    border: 2px solid #00796b;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    text-align: center;
+}
+
+/* Header Styling */
+h1 {
+    color: #00796b;
+    margin-bottom: 20px;
+}
+
+/* Display Styling */
+.display {
+    background-color: #00796b;
+    color: #ffffff;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+/* Turn Number Styling */
+#turn-number {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #ffeb3b;
+}
+
+/* Button Styling (Index Page) */
+button {
+    background-color: #4caf50;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 1.2em;
+    cursor: pointer;
+    margin: 10px 0;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #388e3c;
+}
+
+button:active {
+    background-color: #2e7d32;
+}
+/* Moving Text */
+
+.moving-text {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #790000;
+    color: #ffffff;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 1.2em;
+    padding: 10px 0;
+}
+
+.moving-text div {
+    display: inline-block;
+    animation: scroll-text 60s linear infinite;
+    white-space: nowrap;
+}
+
+@keyframes scroll-text {
+    from {
+        transform: translateX(35%);
+    }
+    to {
+        transform: translateX(-100%);
+    }
+}
+/* Video Container */
+.video-container {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 50%; /* Video occupies the bottom half of the screen */
+    overflow: hidden;
+    z-index: 1;
+}
+
+.video-container video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Ensures the video fills the container */
+    position: absolute;
+}
+
+/* Moving Text */
+.moving-text {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #790000;
+    color: #ffffff;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 1.2em;
+    padding: 10px 0;
+    z-index: 2;
+}
+
+.moving-text div {
+    display: inline-block;
+    animation: scroll-text 60s linear infinite;
+    white-space: nowrap;
+}
+
+/* Fullscreen Styling */
+:fullscreen .video-container, 
+:-webkit-full-screen .video-container {
+    bottom: 0;
+    width: 100%;
+    height: 50%; /* Video still occupies only the bottom half */
+}
+
+
+
+
+/* Full-Screen Sections (Display and Counters Pages) */
+.serviced-section,
+.waiting-section {
+    width: 50%;
+    height: 100%;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Serviced Section Styling */
+.serviced-section {
+    background-color: #00796b;
+    color: #ffffff;
+}
+
+/* Waiting Section Styling */
+.waiting-section {
+    background-color: #4caf50;
+    color: #ffffff;
+}
+
+/* Counter Header Styling */
+.counter h2 {
+    text-align: center;
+    font-size: 1.8em;
+    color: #00796b;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60px;
+}
+
+
+/* List Styling */
+ul {
+    list-style: none;
+    width: 100%;
+    padding: 0;
+}
+
+li {
+    padding: 15px;
+    margin: 10px 0;
+    background-color: #ffffff;
+    color: #00796b;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 1.2em;
+}
+
+/* Button Styling (Display and Counters Pages) */
+button {
+    margin-top: auto;
+    background-color: #ffeb3b;
+    color: #00796b;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #fbc02d;
+}
+
+button:active {
+    background-color: #f57f17;
+}
+#ticket-1 {
+    text-align: center;
+    font-size: 1.2em;
+    color: #0011ff;
+    margin: 10px 0;
+}
+
+#ticket-2 {
+    text-align: center;
+    font-size: 1.2em;
+    color: #0011ff;
+    margin: 10px 0;
+}
+
+#ticket-3 {
+    text-align: center;
+    font-size: 1.2em;
+    color: #0011ff;
+    margin: 10px 0;
+}
+
+#ticket-4 {
+    text-align: center;
+    font-size: 1.2em;
+    color: #0011ff;
+    margin: 10px 0;
+}
+
+#ticket-5 {
+    text-align: center;
+    font-size: 1.2em;
+    color: #0011ff;
+    margin: 10px 0;
+}
+
+#ticket-6 {
+    text-align: center;
+    font-size: 1.2em;
+    color: #0011ff;
+    margin: 10px 0;
+}
+
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Body Styling */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #e0f7fa;
+}
+
+/* Main Container */
+.main-container {
+    display: flex;
+    width: 90%;
+    max-width: 1200px;
+    height: 90vh;
+}
+
+/* Waiting Section (Left Half) */
+.waiting-section {
+    flex: 1;
+    padding: 20px;
+    background-color: #4caf50;
+    color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+}
+
+/* Authentication and Counter Section (Right Half) */
+.auth-counter-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* Authentication Section */
+#auth-section {
+    width: 300px;
+    padding: 20px;
+    background-color: #ffffff;
+    border: 2px solid #00796b;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Error Message Styling */
+#auth-error {
+    color: red;
+    margin-top: 10px;
+    font-size: 0.9em;
+}
+
+/* Counter Styling */
+.counter {
+    width: 300px;
+    background-color: #ffffff;
+    border: 2px solid #00796b;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Counter Header */
+.counter h2 {
+    font-size: 1.5em;
+    color: #00796b;
+    margin-bottom: 10px;
+}
+
+/* Ticket Text Styling */
+p[id^="ticket-"] {
+    font-size: 1.2em;
+    color: #0011ff;
+    margin: 10px 0;
+}
+
+/* Button Styling */
+button {
+    margin-top: 10px;
+    background-color: #ffeb3b;
+    color: #00796b;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #fbc02d;
+}
+
+button:active {
+    background-color: #f57f17;
+}
+
+/* List Styling */
+ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+}
+
+li {
+    padding: 10px;
+    margin: 5px 0;
+    background-color: #ffffff;
+    color: #00796b;
+    border-radius: 5px;
+    text-align: center;
+}

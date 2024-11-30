@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display Area</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="waiting-section">
+        <h2>Waiting List</h2>
+        <ul id="waiting-list"></ul>
+    </div>
+    <div class="serviced-section">
+        <h2>Being Serviced</h2>
+        <ul id="serviced-list"></ul>
+    </div>
+ <!-- Video -->
+ <div class="video-container">
+    <video id="myVideo" autoplay muted loop playsinline>
+        <source src="video.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+</div>
+
+<!-- Moving Text -->
+<div class="moving-text">
+    <div>
+        Riyad Bank launches the Riyad Bank Center for Artificial Intelligence, the first of its kind in the Saudi banking sector.
+        <span> | </span>
+        Riyad Bank launches the Riyad Bank SME Index during Bibaan 24.
+        <span> | </span> 
+        Riyad Bank becomes a strategic partner in the 8th edition of the Future Investment Initiative.
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const video = document.getElementById('myVideo');
+        if (video) {
+            video.muted = true; // Unmute the video
+            video.muted(); // Ensure the video starts playing
+        }
+    });
+</script>
+    <script>
+        // WebSocket connection for Display
+        const server = new WebSocket('ws://192.168.8.141:3001'); // WebSocket server for Display
+        const peers = ['ws://192.168.8.177:3003', 'ws://192.168.8.178:3006', 'ws://192.168.8.157:3004']; // Peer WebSocket addresses
+        const clients = [];
+        const waitingListElem = document.getElementById('waiting-list');
+        const servicedListElem = document.getElementById('serviced-list');
+
+        // Connect to peers
+        peers.forEach((peer) => {
+            if (peer !== 'ws://192.168.8.141:3001') { // Avoid connecting to itself
+                const ws = new WebSocket(peer);
+                ws.onopen = () => {
+                    console.log(`Connected to peer: ${peer}`);
+                    clients.push(ws);
+                };
+                ws.onmessage = (event) => handleIncomingMessage(JSON.parse(event.data));
+                ws.onerror = (error) => console.error(`Error with peer ${peer}:`, error);
+            }
+        });
+
+        // On WebSocket connection open
+        server.onopen = () => {
+            console.log('Connected to Display WebSocket server');
+        };
+
+        // Handle incoming WebSocket messages
+        server.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                console.log('Message received on Display:', data);
+
+                if (data.type === 'NEW_TICKET') {
+                    addTicketToWaitingList(data.ticket);
+                } else if (data.type === 'TICKET_SERVED') {
+                    moveTicketToServicedList(data.ticket);
+                }
+
+                // Broadcast to peers
+                broadcast(data);
+            } catch (error) {
+                console.error('Failed to process WebSocket message:', error);
+            }
+        };
+
+        // Broadcast message to all connected peers
+        function broadcast(message) {
+            clients.forEach((client) => {
+                if (client.readyState === WebSocket.OPEN) {
+                    client.send(JSON.stringify(message));
+                }
+            });
+        }
+
+        // Add ticket to the waiting list
+        function addTicketToWaitingList(ticket) {
+    // Check if the ticket already exists in the waiting list
+    const existingItems = Array.from(waitingListElem.querySelectorAll('li'));
+    const isDuplicate = existingItems.some(item => item.textContent === `${ticket.service}: Ticket Number ${ticket.number}`);
+    
+    if (!isDuplicate) {
+        const li = document.createElement('li');
+        li.textContent = `${ticket.service}: Ticket Number ${ticket.number}`;
+        waitingListElem.appendChild(li);
+    } else {
+        console.log(`Duplicate ticket detected: ${ticket.service}: Ticket Number ${ticket.number}`);
+    }
+}
+
+        // Move ticket to the serviced list
+            function moveTicketToServicedList(ticket) {
+            // Remove the previous ticket for the same counter from the serviced list
+            const servicedItems = servicedListElem.querySelectorAll('li');
+            servicedItems.forEach((item) => {
+                if (item.textContent.includes(`Counter: ${ticket.counter}`)) {
+                    item.remove();
+                }
+            });
+
+            // Remove the ticket from the waiting list
+            const waitingItems = waitingListElem.querySelectorAll('li');
+            waitingItems.forEach((item) => {
+                if (item.textContent === `${ticket.service}: Ticket Number ${ticket.number}`) {
+                    item.remove();
+                }
+            });
+
+            // Add the new ticket to the serviced list with the counter number
+            const li = document.createElement('li');
+            li.textContent = `${ticket.service}: Ticket Number ${ticket.number} (Counter: ${ticket.counter})`;
+            servicedListElem.appendChild(li);
+        }
+      // Handle incoming WebSocket messages
+      function handleIncomingMessage(data) {
+        if (data.type === 'NEW_TICKET') {
+            addTicketToWaitingList(data.ticket);
+        } else if (data.type === 'TICKET_SERVED') {
+            moveTicketToServicedList(data.ticket);
+        } else if (data.type === 'CLOSE_COUNTER') {
+            removeTicketFromServicedList(data.counter); // Remove the ticket for this counter
+        }
+    }
+
+
+        // Remove ticket from the "Being Serviced" section for a specific counter
+        function removeTicketFromServicedList(counter) {
+            const servicedItems = servicedListElem.querySelectorAll('li');
+            servicedItems.forEach((item) => {
+                if (item.textContent.includes(`Counter ${counter}`)) {
+                    item.remove();
+                    console.log(`Removed ticket for Counter ${counter} from Being Serviced`);
+                }
+            });
+        }
+
+
+        // On WebSocket error
+        server.onerror = (error) => {
+            console.error('WebSocket error:', error);
+        };
+
+        // On WebSocket close
+        server.onclose = () => {
+            console.log('Disconnected from Display WebSocket server');
+        };
+    </script>
+</body>
+</html>
